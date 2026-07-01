@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ScholarPath – Expert Tutoring & Assignment Help</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #0D0D0D;
+    --paper:     #F8F6F1;
+    --cream:     #EDE9DF;
+    --gold:      #C4973A;
+    --gold-lt:   #E8C97A;
+    --teal:      #1A5F6A;
+    --teal-lt:   #2B8A9A;
+    --rust:      #C45A2A;
+    --muted:     #6B6560;
+    --white:     #FFFFFF;
+
+    --display: 'Playfair Display', Georgia, serif;
+    --body:    'Inter', sans-serif;
+    --mono:    'JetBrains Mono', monospace;
+
+    --radius: 4px;
+    --radius-lg: 12px;
+  }
+
+  html.dark {
+    --ink:       #F1EFE9;
+    --paper:     #15171A;
+    --cream:     #1F2226;
+    --gold:      #E0AC4F;
+    --gold-lt:   #F0CC83;
+    --teal:      #3AA0AE;
+    --teal-lt:   #57BACB;
+    --rust:      #D97B4F;
+    --muted:     #9A958E;
+    --white:     #1B1E22;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    height: 64px;
+    background: rgba(248,246,241,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(196,151,58,0.2);
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--teal); }
+  .nav-cta {
+    background: var(--teal);
+    color: var(--white) !important;
+    padding: 0.45rem 1.2rem;
+    border-radius: var(--radius);
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--teal-lt) !important; color: var(--white) !important; }
+
+  .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+  .nav-auth { display: flex; align-items: center; gap: 0.7rem; }
+  .nav-auth a { white-space: nowrap; }
+  .btn-login {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink) !important;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .btn-login:hover { color: var(--teal) !important; }
+  .btn-signup {
+    background: var(--ink);
+    color: var(--paper) !important;
+    padding: 0.45rem 1.1rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s !important;
+  }
+  .btn-signup:hover { opacity: 0.82; }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    width: 46px; height: 26px;
+    border-radius: 20px;
+    background: var(--cream);
+    border: 1px solid rgba(196,151,58,0.3);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .theme-toggle-dot {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    transition: transform 0.3s, background 0.3s;
+  }
+  html.dark .theme-toggle-dot { transform: translateX(20px); background: var(--teal); }
+
+  /* ── AUTH MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(13,13,13,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open { display: flex; opacity: 1; }
+  .modal-box {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 420px;
+    padding: 2.4rem 2.2rem;
+    position: relative;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    transform: translateY(16px) scale(0.97);
+    transition: transform 0.25s;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+  .modal-close {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--cream);
+    color: var(--muted);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .modal-close:hover { background: var(--teal); color: var(--white); }
+  .modal-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .modal-box h2 {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+  .modal-sub { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.8rem; }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+  .form-row { display: flex; gap: 0.8rem; }
+  .form-row .form-group { flex: 1; }
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--cream);
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--teal); }
+  .form-check {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+  .form-check input { width: auto; accent-color: var(--teal); }
+  .form-submit {
+    width: 100%;
+    background: var(--teal);
+    color: var(--white);
+    border: none;
+    padding: 0.85rem;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: var(--body);
+  }
+  .form-submit:hover { background: var(--teal-lt); }
+  .form-divider {
+    display: flex; align-items: center; gap: 0.8rem;
+    margin: 1.4rem 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .form-divider::before, .form-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cream);
+  }
+  .social-row { display: flex; gap: 0.7rem; margin-bottom: 1.6rem; }
+  .social-btn {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.65rem;
+    border: 1.5px solid var(--cream);
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    font-family: var(--body);
+  }
+  .social-btn:hover { border-color: var(--teal); }
+  .modal-switch {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .modal-switch button {
+    color: var(--teal);
+    font-weight: 700;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--body);
+    font-size: 0.85rem;
+    text-decoration: underline;
+  }
+  .role-toggle {
+    display: flex; gap: 0.5rem; margin-bottom: 1.4rem;
+  }
+  .role-btn {
+    flex: 1;
+    padding: 0.6rem;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--cream);
+    background: var(--white);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--body);
+  }
+  .role-btn.active {
+    border-color: var(--teal);
+    background: rgba(26,95,106,0.08);
+    color: var(--teal);
+  }
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 1rem 0;
+  }
+  .form-success.show { display: block; }
+  .form-success .icon { font-size: 2.6rem; margin-bottom: 0.8rem; }
+  .form-success h3 {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  .form-success p { font-size: 0.875rem; color: var(--muted); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 5% 60px;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 70% at 80% 50%, rgba(26,95,106,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block; width: 2rem; height: 1px; background: var(--gold);
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--teal);
+    position: relative;
+  }
+  .hero h1 em::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 2px; right: 0; height: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 460px;
+    margin-bottom: 2.4rem;
+    line-height: 1.75;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--teal);
+    color: var(--white);
+    padding: 0.8rem 2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 2px solid var(--teal);
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--teal-lt); border-color: var(--teal-lt); }
+  .btn-outline {
+    background: transparent;
+    color: var(--teal);
+    padding: 0.8rem 2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 2px solid var(--teal);
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .btn-outline:hover { background: var(--teal); color: var(--white); }
+
+  /* Hero visual */
+  .hero-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+    position: relative;
+  }
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 1.4rem 1.2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .stat-card.teal::before  { background: var(--teal); }
+  .stat-card.gold::before  { background: var(--gold); }
+  .stat-card.rust::before  { background: var(--rust); }
+  .stat-card.wide { grid-column: 1 / -1; }
+  .stat-num {
+    font-family: var(--display);
+    font-size: 2.4rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-card.teal .stat-num { color: var(--teal); }
+  .stat-card.gold .stat-num { color: var(--gold); }
+  .stat-card.rust .stat-num { color: var(--rust); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+  .subject-chips {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    background: var(--cream);
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  /* ── TRUST BAR ── */
+  .trust-bar {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 5%;
+    display: flex; align-items: center; justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.9;
+  }
+  .trust-item .icon { font-size: 1rem; }
+
+  /* ── SECTIONS ── */
+  section { padding: 80px 5%; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .section-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* ── LEVELS ── */
+  #levels { background: var(--white); }
+  .levels-intro { margin-bottom: 3rem; }
+  .levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .level-card {
+    border: 1px solid var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    background: var(--paper);
+  }
+  .level-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+  .level-badge {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  .level-card h3 {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .level-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
+  .level-subjects {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.5rem;
+  }
+  .level-subjects span {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+  .level-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.4rem;
+    transition: gap 0.2s;
+  }
+  .level-link:hover { gap: 0.7rem; }
+
+  /* Level color variants */
+  .level-primary   { --lc: var(--teal);  --lbg: rgba(26,95,106,0.08);  --ltag: rgba(26,95,106,0.12); }
+  .level-secondary { --lc: var(--gold);  --lbg: rgba(196,151,58,0.08); --ltag: rgba(196,151,58,0.12); }
+  .level-tertiary  { --lc: var(--rust);  --lbg: rgba(196,90,42,0.08);  --ltag: rgba(196,90,42,0.12); }
+  .level-card .level-badge { background: var(--lbg); color: var(--lc); }
+  .level-card .level-subjects span { background: var(--ltag); color: var(--lc); }
+  .level-card .level-link { color: var(--lc); }
+  .level-card::after {
+    content: '';
+    position: absolute; right: -20px; bottom: -20px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: var(--lbg);
+    transition: transform 0.3s;
+  }
+  .level-card:hover::after { transform: scale(2.5); }
+
+  /* ── SERVICES ── */
+  #services { background: var(--paper); }
+  .services-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .services-sticky { position: sticky; top: 100px; }
+  .service-tabs { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 2rem; }
+  .stab {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    background: transparent;
+    text-align: left;
+    font-family: var(--body);
+  }
+  .stab.active, .stab:hover {
+    background: var(--white);
+    border-color: var(--cream);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .stab.active { border-left: 3px solid var(--teal); }
+  .stab-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .stab-text strong { display: block; font-size: 0.95rem; color: var(--ink); }
+  .stab-text span { font-size: 0.8rem; color: var(--muted); }
+
+  .service-panels { }
+  .service-panel { display: none; }
+  .service-panel.active { display: block; }
+  .service-panel h3 {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+  .service-panel > p { color: var(--muted); margin-bottom: 1.8rem; line-height: 1.75; }
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 0.8rem;
+    font-size: 0.925rem;
+    padding: 0.9rem 1rem;
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--cream);
+  }
+  .feature-list li::before {
+    content: '✓';
+    color: var(--teal);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--ink); color: var(--paper); }
+  #how .section-label { color: var(--gold-lt); }
+  #how .section-title { color: var(--paper); }
+  #how .section-sub { color: rgba(248,246,241,0.65); }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 3.5rem;
+    position: relative;
+  }
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 2rem; left: calc(12.5% + 1rem); right: calc(12.5% + 1rem);
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--teal-lt) 100%);
+    opacity: 0.4;
+  }
+  .step {
+    padding: 0 1.5rem;
+    text-align: center;
+    position: relative;
+  }
+  .step-num {
+    width: 4rem; height: 4rem;
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 1.2rem;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.4rem;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative; z-index: 1;
+  }
+  .step:hover .step-num { border-color: var(--gold); color: var(--teal); }
+  .step h4 {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--paper);
+  }
+  .step p { font-size: 0.83rem; color: rgba(248,246,241,0.55); line-height: 1.65; }
+
+  /* ── SUBJECTS ── */
+  #subjects { background: var(--cream); }
+  .subjects-intro { margin-bottom: 3rem; }
+  .subject-categories {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .cat-btn {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--teal);
+    background: transparent;
+    color: var(--teal);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--body);
+  }
+  .cat-btn.active, .cat-btn:hover {
+    background: var(--teal);
+    color: var(--white);
+  }
+  .subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  .subject-item {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 1.2rem 1rem;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .subject-item:hover {
+    border-color: var(--teal);
+    box-shadow: 0 4px 16px rgba(26,95,106,0.12);
+    transform: translateY(-2px);
+  }
+  .subject-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .subject-name { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+  .subject-count { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ── PRICING ── */
+  #pricing { background: var(--white); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .price-card {
+    border: 1px solid var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 2.2rem 2rem;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.09);
+  }
+  .price-card.featured {
+    background: var(--teal);
+    color: var(--white);
+    border-color: var(--teal);
+  }
+  .price-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+  }
+  .price-tier { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+  .price-card.featured .price-tier { color: rgba(255,255,255,0.7); }
+  .price-card:not(.featured) .price-tier { color: var(--muted); }
+  .price-amount {
+    font-family: var(--display);
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.3rem;
+  }
+  .price-card.featured .price-amount { color: var(--white); }
+  .price-card:not(.featured) .price-amount { color: var(--ink); }
+  .price-period { font-size: 0.8rem; margin-bottom: 1.8rem; }
+  .price-card.featured .price-period { color: rgba(255,255,255,0.6); }
+  .price-card:not(.featured) .price-period { color: var(--muted); }
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+  .price-features li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.875rem; }
+  .price-features li::before { content: '✓'; font-weight: 700; flex-shrink: 0; }
+  .price-card.featured .price-features li::before { color: var(--gold-lt); }
+  .price-card:not(.featured) .price-features li::before { color: var(--teal); }
+  .price-card.featured .price-features li { color: rgba(255,255,255,0.88); }
+  .btn-white {
+    display: block; text-align: center;
+    background: var(--white);
+    color: var(--teal);
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border: 2px solid var(--white);
+  }
+  .btn-white:hover { background: transparent; color: var(--white); }
+  .btn-teal-outline {
+    display: block; text-align: center;
+    background: transparent;
+    color: var(--teal);
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border: 2px solid var(--teal);
+  }
+  .btn-teal-outline:hover { background: var(--teal); color: var(--white); }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--paper); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .testi-card {
+    background: var(--white);
+    border: 1px solid var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem;
+    position: relative;
+  }
+  .testi-card::before {
+    content: '"';
+    font-family: var(--display);
+    font-size: 5rem;
+    color: var(--cream);
+    position: absolute;
+    top: -0.5rem; left: 1.2rem;
+    line-height: 1;
+  }
+  .testi-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.4rem;
+    position: relative;
+    z-index: 1;
+    padding-top: 1.2rem;
+  }
+  .testi-author { display: flex; align-items: center; gap: 0.8rem; }
+  .testi-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: var(--display);
+    flex-shrink: 0;
+  }
+  .testi-name { font-size: 0.875rem; font-weight: 600; }
+  .testi-role { font-size: 0.75rem; color: var(--muted); }
+  .stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 0.2rem; }
+
+  /* ── CTA ── */
+  #cta {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--ink) 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 100px 5%;
+  }
+  #cta .section-label { color: var(--gold-lt); justify-content: center; }
+  #cta .section-title { color: var(--white); max-width: 600px; margin: 0 auto 1rem; }
+  #cta .section-sub { color: rgba(255,255,255,0.65); margin: 0 auto 2.5rem; text-align: center; }
+  .cta-form {
+    display: flex; gap: 0.8rem; max-width: 480px; margin: 0 auto;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .cta-form input {
+    flex: 1; min-width: 200px;
+    padding: 0.85rem 1.2rem;
+    border-radius: var(--radius);
+    border: none;
+    font-family: var(--body);
+    font-size: 0.95rem;
+    outline: none;
+    background: rgba(255,255,255,0.12);
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .cta-form input::placeholder { color: rgba(255,255,255,0.45); }
+  .cta-form input:focus { border-color: var(--gold-lt); }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--ink);
+    padding: 0.85rem 2rem;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    font-family: var(--body);
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-gold:hover { background: var(--gold-lt); }
+  .cta-note { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 60px 5% 30px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand p { font-size: 0.85rem; color: rgba(248,246,241,0.5); margin-top: 0.8rem; line-height: 1.7; }
+  footer h4 { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  footer ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  footer a { color: rgba(248,246,241,0.55); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+  footer a:hover { color: var(--paper); }
+  .footer-bottom {
+    border-top: 1px solid rgba(248,246,241,0.08);
+    padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem;
+    color: rgba(248,246,241,0.35);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding-top: 120px; }
+    .hero-visual { order: -1; grid-template-columns: 1fr 1fr; }
+    .services-wrapper { grid-template-columns: 1fr; }
+    .services-sticky { position: static; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .steps-grid::before { display: none; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 380px; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .nav-auth .btn-login { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .hero-visual { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .pricing-grid { max-width: 100%; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up {
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .fade-up:nth-child(1) { animation-delay: 0.1s; }
+  .fade-up:nth-child(2) { animation-delay: 0.2s; }
+  .fade-up:nth-child(3) { animation-delay: 0.3s; }
+  .fade-up:nth-child(4) { animation-delay: 0.4s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-up { animation: none; opacity: 1; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Scholar<span>Path</span></a>
+  <ul class="nav-links">
+    <li><a href="#levels">Levels</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#subjects">Subjects</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <span class="theme-toggle-dot">☀️</span>
+    </button>
+    <div class="nav-auth">
+      <a href="#" class="btn-login" id="openLogin">Log in</a>
+      <a href="#" class="btn-signup" id="openSignup">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <button class="modal-close" data-close>✕</button>
+    <div class="modal-eyebrow">Welcome Back</div>
+    <h2>Log in to ScholarPath</h2>
+    <p class="modal-sub">Continue your learning journey where you left off.</p>
+
+    <div class="social-row">
+      <button class="social-btn">🔵 Google</button>
+      <button class="social-btn">⬛ Apple</button>
+    </div>
+    <div class="form-divider">or continue with email</div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="loginEmail">Email address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required/>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="rememberMe"/>
+        <label for="rememberMe" style="margin:0">Remember me</label>
+        <a href="#" style="margin-left:auto;color:var(--teal);font-weight:600;text-decoration:none">Forgot password?</a>
+      </div>
+      <button type="submit" class="form-submit">Log In</button>
+    </form>
+
+    <div class="form-success" id="loginSuccess">
+      <div class="icon">✅</div>
+      <h3>You're logged in!</h3>
+      <p>Redirecting you to your dashboard…</p>
+    </div>
+
+    <p class="modal-switch" style="margin-top:1.4rem">
+      Don't have an account? <button id="switchToSignup">Sign up free</button>
+    </p>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal-box">
+    <button class="modal-close" data-close>✕</button>
+    <div class="modal-eyebrow">Join ScholarPath</div>
+    <h2>Create your account</h2>
+    <p class="modal-sub">Start learning or tutoring in under a minute.</p>
+
+    <div class="role-toggle">
+      <button class="role-btn active" data-role="student">🎓 I'm a Student</button>
+      <button class="role-btn" data-role="tutor">📚 I'm a Tutor</button>
+    </div>
+
+    <div class="social-row">
+      <button class="social-btn">🔵 Google</button>
+      <button class="social-btn">⬛ Apple</button>
+    </div>
+    <div class="form-divider">or sign up with email</div>
+
+    <form id="signupForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="signupFirst">First name</label>
+          <input type="text" id="signupFirst" placeholder="Jordan" required/>
+        </div>
+        <div class="form-group">
+          <label for="signupLast">Last name</label>
+          <input type="text" id="signupLast" placeholder="Lee" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="signupEmail">Email address</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group" id="levelGroup">
+        <label for="signupLevel">Academic level</label>
+        <select id="signupLevel">
+          <option>Primary School</option>
+          <option>Middle School</option>
+          <option>High School (GCSE/O-Level)</option>
+          <option>A-Level / Pre-University</option>
+          <option>Undergraduate</option>
+          <option>Master's / PhD</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" placeholder="At least 8 characters" required/>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="agreeTerms" required/>
+        <label for="agreeTerms" style="margin:0">I agree to the Terms of Service and Privacy Policy</label>
+      </div>
+      <button type="submit" class="form-submit">Create Account</button>
+    </form>
+
+    <div class="form-success" id="signupSuccess">
+      <div class="icon">🎉</div>
+      <h3>Welcome to ScholarPath!</h3>
+      <p>Check your email to verify your account and get started.</p>
+    </div>
+
+    <p class="modal-switch" style="margin-top:1.4rem">
+      Already have an account? <button id="switchToLogin">Log in</button>
+    </p>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Expert Academic Support</div>
+    <h1>Learn smarter,<br><em>achieve more</em><br>at every level</h1>
+    <p class="hero-sub">From primary school to postgraduate research — ScholarPath connects students with expert tutors and provides assignment assistance tailored to your level and goals.</p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-primary">Start Learning Today</a>
+      <a href="#levels" class="btn-outline">Explore Levels</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="stat-card teal fade-up">
+      <div class="stat-num">12K+</div>
+      <div class="stat-label">Students Helped</div>
+    </div>
+    <div class="stat-card gold fade-up">
+      <div class="stat-num">98%</div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+    <div class="stat-card rust fade-up">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Expert Tutors</div>
+    </div>
+    <div class="stat-card teal wide fade-up">
+      <div class="stat-label" style="margin-bottom:0.5rem">Subjects we cover</div>
+      <div class="subject-chips">
+        <span class="chip">Mathematics</span>
+        <span class="chip">Sciences</span>
+        <span class="chip">English</span>
+        <span class="chip">History</span>
+        <span class="chip">Law</span>
+        <span class="chip">Economics</span>
+        <span class="chip">Computer Science</span>
+        <span class="chip">Medicine</span>
+        <span class="chip">Engineering</span>
+        <span class="chip">+80 more</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="icon">🔒</span> 100% Confidential</div>
+  <div class="trust-item"><span class="icon">⚡</span> Fast Turnaround</div>
+  <div class="trust-item"><span class="icon">✅</span> Plagiarism-Free Work</div>
+  <div class="trust-item"><span class="icon">🎓</span> Qualified Experts</div>
+  <div class="trust-item"><span class="icon">💬</span> 24/7 Support</div>
+</div>
+
+<!-- LEVELS -->
+<section id="levels">
+  <div class="levels-intro">
+    <div class="section-label">Academic Levels</div>
+    <h2 class="section-title">Support at every stage of learning</h2>
+    <p class="section-sub">Whether your child is just starting school or you're pursuing a doctorate, we have specialist support designed for your exact level.</p>
+  </div>
+
+  <div class="levels-grid">
+
+    <div class="level-card level-primary">
+      <span class="level-badge">Foundation</span>
+      <h3>Primary School</h3>
+      <p>Building strong foundations in literacy, numeracy, and core subjects for learners aged 5–11. Fun, patient, and encouraging sessions.</p>
+      <div class="level-subjects">
+        <span>Reading & Writing</span>
+        <span>Basic Maths</span>
+        <span>Science</span>
+        <span>Phonics</span>
+      </div>
+      <a href="#cta" class="level-link">Explore → </a>
+    </div>
+
+    <div class="level-card level-secondary">
+      <span class="level-badge">Intermediate</span>
+      <h3>Middle School</h3>
+      <p>Bridging primary to secondary with structured study skills, subject depth, and exam preparation for ages 11–14.</p>
+      <div class="level-subjects">
+        <span>Algebra</span>
+        <span>Essay Writing</span>
+        <span>Biology</span>
+        <span>Geography</span>
+      </div>
+      <a href="#cta" class="level-link">Explore → </a>
+    </div>
+
+    <div class="level-card level-tertiary">
+      <span class="level-badge">Key Stage</span>
+      <h3>High School (GCSE/O-Level)</h3>
+      <p>Targeted exam prep, coursework help, and deep subject understanding to maximise grades in national examinations.</p>
+      <div class="level-subjects">
+        <span>GCSE Maths</span>
+        <span>English Lit</span>
+        <span>Chemistry</span>
+        <span>History</span>
+      </div>
+      <a href="#cta" class="level-link">Explore → </a>
+    </div>
+
+    <div class="level-card level-primary">
+      <span class="level-badge">Advanced</span>
+      <h3>A-Level / Pre-University</h3>
+      <p>In-depth support for advanced courses including A-Levels, IB, and AP — designed to get you into your dream university.</p>
+      <div class="level-subjects">
+        <span>A-Level Physics</span>
+        <span>Economics</span>
+        <span>Further Maths</span>
+        <span>Psychology</span>
+      </div>
+      <a href="#cta" class="level-link">Explore → </a>
+    </div>
+
+    <div class="level-card level-secondary">
+      <span class="level-badge">Undergraduate</span>
+      <h3>University / Bachelor's</h3>
+      <p>Assignment assistance, essay writing support, dissertation guidance, and exam preparation across all undergraduate disciplines.</p>
+      <div class="level-subjects">
+        <span>Dissertations</span>
+        <span>Case Studies</span>
+        <span>Lab Reports</span>
+        <span>Essays</span>
+      </div>
+      <a href="#cta" class="level-link">Explore → </a>
+    </div>
+
+    <div class="level-card level-tertiary">
+      <span class="level-badge">Postgraduate</span>
+      <h3>Master's & PhD</h3>
+      <p>Advanced research support, thesis writing, statistical analysis, and expert consultation for postgraduate students.</p>
+      <div class="level-subjects">
+        <span>Thesis Writing</span>
+        <span>Research Methods</span>
+        <span>Data Analysis</span>
+        <span>Literature Reviews</span>
+      </div>
+      <a href="#cta" class="level-link">Explore → </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-wrapper">
+    <div class="services-sticky">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Every kind of academic support</h2>
+      <p class="section-sub">Choose the help you need, exactly when you need it.</p>
+
+      <div class="service-tabs" id="serviceTabs">
+        <button class="stab active" data-panel="tutoring">
+          <span class="stab-icon">🎓</span>
+          <span class="stab-text">
+            <strong>Live Tutoring</strong>
+            <span>One-on-one sessions</span>
+          </span>
+        </button>
+        <button class="stab" data-panel="assignments">
+          <span class="stab-icon">📝</span>
+          <span class="stab-text">
+            <strong>Assignment Help</strong>
+            <span>Essays, reports & more</span>
+          </span>
+        </button>
+        <button class="stab" data-panel="exam">
+          <span class="stab-icon">📊</span>
+          <span class="stab-text">
+            <strong>Exam Preparation</strong>
+            <span>Practice & revision</span>
+          </span>
+        </button>
+        <button class="stab" data-panel="research">
+          <span class="stab-icon">🔬</span>
+          <span class="stab-text">
+            <strong>Research Support</strong>
+            <span>Dissertations & theses</span>
+          </span>
+        </button>
+        <button class="stab" data-panel="review">
+          <span class="stab-icon">✏️</span>
+          <span class="stab-text">
+            <strong>Proofreading & Editing</strong>
+            <span>Polish your work</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div id="servicePanels">
+      <div class="service-panel active" id="panel-tutoring">
+        <h3>Live One-on-One Tutoring</h3>
+        <p>Work directly with a subject expert through video sessions tailored to your pace, style, and learning goals. Available at any hour.</p>
+        <ul class="feature-list">
+          <li>Personalised learning plan created before your first session</li>
+          <li>Choose from hundreds of tutors by subject, level, and availability</li>
+          <li>Flexible scheduling — book same-day or in advance</li>
+          <li>Session recordings available to review later</li>
+          <li>Progress tracking and tutor feedback after every session</li>
+          <li>All levels from Primary to PhD welcome</li>
+        </ul>
+        <a href="#cta" class="btn-primary">Book a Tutor</a>
+      </div>
+
+      <div class="service-panel" id="panel-assignments">
+        <h3>Assignment Assistance</h3>
+        <p>Struggling with an essay, case study, or problem set? Our experts guide you through the process or provide model answers you can learn from.</p>
+        <ul class="feature-list">
+          <li>Subject-specialist writers with verified academic credentials</li>
+          <li>All assignment types: essays, reports, case studies, problem sets</li>
+          <li>Original, plagiarism-free content every time</li>
+          <li>Deadline-focused delivery — even urgent requests</li>
+          <li>Free revisions until you're satisfied</li>
+          <li>Referencing in any style: APA, MLA, Harvard, Chicago</li>
+        </ul>
+        <a href="#cta" class="btn-primary">Submit an Assignment</a>
+      </div>
+
+      <div class="service-panel" id="panel-exam">
+        <h3>Exam Preparation</h3>
+        <p>Structured revision programmes, past paper practice, and technique coaching to help you perform at your best when it matters most.</p>
+        <ul class="feature-list">
+          <li>Diagnostic assessment to identify weak areas</li>
+          <li>Curated past papers with worked solutions</li>
+          <li>Timed mock exams with detailed feedback</li>
+          <li>Memory techniques and revision strategies</li>
+          <li>Intensive crash courses for last-minute prep</li>
+          <li>Available for all major exam boards and qualifications</li>
+        </ul>
+        <a href="#cta" class="btn-primary">Start Exam Prep</a>
+      </div>
+
+      <div class="service-panel" id="panel-research">
+        <h3>Research & Dissertation Support</h3>
+        <p>From choosing a research question to defending your findings — our PhD-qualified mentors guide every stage of the research process.</p>
+        <ul class="feature-list">
+          <li>Topic selection and research proposal development</li>
+          <li>Literature review writing and gap analysis</li>
+          <li>Methodology design and ethics guidance</li>
+          <li>Statistical analysis support (SPSS, R, Python)</li>
+          <li>Full thesis and dissertation writing assistance</li>
+          <li>Viva/defence preparation and coaching</li>
+        </ul>
+        <a href="#cta" class="btn-primary">Get Research Help</a>
+      </div>
+
+      <div class="service-panel" id="panel-review">
+        <h3>Proofreading & Editing</h3>
+        <p>Professional academic editing to refine your writing — improving clarity, structure, grammar, and flow without changing your voice.</p>
+        <ul class="feature-list">
+          <li>Grammar, spelling, and punctuation correction</li>
+          <li>Academic tone and style improvements</li>
+          <li>Structure and argument flow review</li>
+          <li>Reference and citation checking</li>
+          <li>Word count reduction when required</li>
+          <li>Tracked changes with detailed editor comments</li>
+        </ul>
+        <a href="#cta" class="btn-primary">Upload Your Work</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div style="text-align:center">
+    <div class="section-label">Simple Process</div>
+    <h2 class="section-title">Get help in four steps</h2>
+    <p class="section-sub" style="margin:0 auto">No complicated sign-ups. Get the support you need quickly and simply.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h4>Tell Us What You Need</h4>
+      <p>Submit your subject, level, and what kind of help you're looking for. Takes under 2 minutes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h4>Get Matched Instantly</h4>
+      <p>We pair you with the right expert tutor or specialist based on your exact requirements.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h4>Start Learning</h4>
+      <p>Begin your live session or receive your completed assignment — fast, professional, thorough.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h4>Achieve Your Goals</h4>
+      <p>Track your progress, review your results, and keep growing with ongoing support.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SUBJECTS -->
+<section id="subjects">
+  <div class="subjects-intro">
+    <div class="section-label">Subject Coverage</div>
+    <h2 class="section-title">90+ subjects covered</h2>
+    <p class="section-sub">Whatever you're studying, we have an expert for it.</p>
+  </div>
+  <div class="subject-categories">
+    <button class="cat-btn active">All</button>
+    <button class="cat-btn">Sciences</button>
+    <button class="cat-btn">Humanities</button>
+    <button class="cat-btn">Business</button>
+    <button class="cat-btn">Technology</button>
+    <button class="cat-btn">Arts</button>
+    <button class="cat-btn">Languages</button>
+  </div>
+  <div class="subjects-grid">
+    <div class="subject-item"><div class="subject-icon">➕</div><div class="subject-name">Mathematics</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🔬</div><div class="subject-name">Biology</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">⚗️</div><div class="subject-name">Chemistry</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">⚡</div><div class="subject-name">Physics</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">📖</div><div class="subject-name">English</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🌍</div><div class="subject-name">History</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">⚖️</div><div class="subject-name">Law</div><div class="subject-count">Uni+</div></div>
+    <div class="subject-item"><div class="subject-icon">📈</div><div class="subject-name">Economics</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">💻</div><div class="subject-name">Computer Science</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🧠</div><div class="subject-name">Psychology</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🏗️</div><div class="subject-name">Engineering</div><div class="subject-count">Uni+</div></div>
+    <div class="subject-item"><div class="subject-icon">💊</div><div class="subject-name">Medicine</div><div class="subject-count">Uni+</div></div>
+    <div class="subject-item"><div class="subject-icon">📊</div><div class="subject-name">Statistics</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🎨</div><div class="subject-name">Art & Design</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🌐</div><div class="subject-name">Geography</div><div class="subject-count">All levels</div></div>
+    <div class="subject-item"><div class="subject-icon">🗣️</div><div class="subject-name">Languages</div><div class="subject-count">All levels</div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div style="text-align:center">
+    <div class="section-label">Transparent Pricing</div>
+    <h2 class="section-title">Plans for every budget</h2>
+    <p class="section-sub" style="margin:0 auto 0">No hidden fees. Cancel anytime.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-amount">$19</div>
+      <div class="price-period">per session</div>
+      <ul class="price-features">
+        <li>1 tutoring session (60 min)</li>
+        <li>1 assignment review</li>
+        <li>Email support</li>
+        <li>Basic progress report</li>
+        <li>Access to study resources</li>
+      </ul>
+      <a href="#cta" class="btn-teal-outline">Get Started</a>
+    </div>
+
+    <div class="price-card featured">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-tier">Scholar</div>
+      <div class="price-amount">$59</div>
+      <div class="price-period">per month</div>
+      <ul class="price-features">
+        <li>8 tutoring sessions/month</li>
+        <li>Unlimited assignment help</li>
+        <li>Priority tutor matching</li>
+        <li>Detailed progress tracking</li>
+        <li>24/7 chat support</li>
+        <li>Exam prep materials</li>
+        <li>Free proofreading (2/month)</li>
+      </ul>
+      <a href="#cta" class="btn-white">Start Free Trial</a>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Academic Pro</div>
+      <div class="price-amount">$99</div>
+      <div class="price-period">per month</div>
+      <ul class="price-features">
+        <li>Unlimited tutoring sessions</li>
+        <li>Priority assignment delivery</li>
+        <li>Dedicated personal tutor</li>
+        <li>Dissertation/thesis support</li>
+        <li>Unlimited proofreading</li>
+        <li>Statistical analysis help</li>
+        <li>1-to-1 career guidance</li>
+      </ul>
+      <a href="#cta" class="btn-teal-outline">Go Pro</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div style="text-align:center; margin-bottom:1rem">
+    <div class="section-label">Student Stories</div>
+    <h2 class="section-title">Results that speak for themselves</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <p class="testi-text">I went from a D to an A in GCSE Maths within three months. My tutor was incredibly patient and explained everything in a way that finally clicked for me.</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:#1A5F6A;color:#fff">JM</div>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="testi-name">Jamie M.</div>
+          <div class="testi-role">GCSE Student, Age 16</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <p class="testi-text">ScholarPath helped me complete my dissertation on time. The research support was thorough and my supervisor was impressed with the quality of my literature review.</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:#C4973A;color:#fff">AK</div>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="testi-name">Amara K.</div>
+          <div class="testi-role">Master's Student, University of Leeds</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <p class="testi-text">My son struggled with primary school reading for years. After just 6 sessions with his ScholarPath tutor, he's reading confidently and actually enjoys it now.</p>
+      <div class="testi-author">
+        <div class="testi-avatar" style="background:#C45A2A;color:#fff">SP</div>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="testi-name">Sarah P.</div>
+          <div class="testi-role">Parent of Primary Student</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="section-label" style="display:flex;justify-content:center">Start Today</div>
+  <h2 class="section-title">Ready to reach your full potential?</h2>
+  <p class="section-sub">Join thousands of students already achieving more with ScholarPath. Your first session is on us.</p>
+  <div class="cta-form">
+    <input type="email" placeholder="Enter your email address"/>
+    <a href="#" class="btn-gold">Get Free Session</a>
+  </div>
+  <p class="cta-note">No credit card required. Cancel anytime. Free trial for new students.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="font-family:var(--display);font-size:1.4rem;font-weight:900;color:var(--paper)">Scholar<span style="color:var(--gold)">Path</span></div>
+      <p>Expert tutoring and assignment assistance for students at every academic level — from primary school to postgraduate research.</p>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Live Tutoring</a></li>
+        <li><a href="#">Assignment Help</a></li>
+        <li><a href="#">Exam Prep</a></li>
+        <li><a href="#">Dissertation Support</a></li>
+        <li><a href="#">Proofreading</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Levels</h4>
+      <ul>
+        <li><a href="#">Primary School</a></li>
+        <li><a href="#">Middle School</a></li>
+        <li><a href="#">GCSE / O-Level</a></li>
+        <li><a href="#">A-Level / IB</a></li>
+        <li><a href="#">University</a></li>
+        <li><a href="#">Postgraduate</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Become a Tutor</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ScholarPath. All rights reserved.</span>
+    <span>Made for students, by educators.</span>
+  </div>
+</footer>
+
+<script>
+  // ===== THEME TOGGLE =====
+  const themeToggle = document.getElementById('themeToggle');
+  const themeDot = themeToggle.querySelector('.theme-toggle-dot');
+  const root = document.documentElement;
+
+  function setTheme(dark) {
+    root.classList.toggle('dark', dark);
+    themeDot.textContent = dark ? '🌙' : '☀️';
+    localStorage.setItem('scholarpath-theme', dark ? 'dark' : 'light');
+  }
+  const savedTheme = localStorage.getItem('scholarpath-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
+
+  themeToggle.addEventListener('click', () => {
+    setTheme(!root.classList.contains('dark'));
+  });
+
+  // ===== MODAL HANDLING =====
+  const loginModal = document.getElementById('loginModal');
+  const signupModal = document.getElementById('signupModal');
+
+  function openModal(modal) {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(modal) {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeAllModals() {
+    closeModal(loginModal);
+    closeModal(signupModal);
+  }
+
+  document.getElementById('openLogin').addEventListener('click', e => {
+    e.preventDefault(); openModal(loginModal);
+  });
+  document.getElementById('openSignup').addEventListener('click', e => {
+    e.preventDefault(); openModal(signupModal);
+  });
+  document.getElementById('switchToSignup').addEventListener('click', () => {
+    closeModal(loginModal); openModal(signupModal);
+  });
+  document.getElementById('switchToLogin').addEventListener('click', () => {
+    closeModal(signupModal); openModal(loginModal);
+  });
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeAllModals());
+  });
+  [loginModal, signupModal].forEach(modal => {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal(modal);
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAllModals();
+  });
+
+  // ===== SIGNUP ROLE TOGGLE =====
+  const roleButtons = document.querySelectorAll('.role-btn');
+  const levelGroup = document.getElementById('levelGroup');
+  roleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      roleButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const isTutor = btn.dataset.role === 'tutor';
+      levelGroup.querySelector('label').textContent = isTutor ? 'Subject you teach' : 'Academic level';
+    });
+  });
+
+  // ===== FORM SUBMISSION (demo only) =====
+  document.getElementById('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    e.target.style.display = 'none';
+    document.querySelector('#loginModal .social-row').style.display = 'none';
+    document.querySelector('#loginModal .form-divider').style.display = 'none';
+    document.querySelector('#loginModal .modal-switch').style.display = 'none';
+    document.getElementById('loginSuccess').classList.add('show');
+  });
+
+  document.getElementById('signupForm').addEventListener('submit', e => {
+    e.preventDefault();
+    e.target.style.display = 'none';
+    document.querySelector('#signupModal .social-row').style.display = 'none';
+    document.querySelector('#signupModal .form-divider').style.display = 'none';
+    document.querySelector('#signupModal .role-toggle').style.display = 'none';
+    document.querySelector('#signupModal .modal-switch').style.display = 'none';
+    document.getElementById('signupSuccess').classList.add('show');
+  });
+
+  // Service tab switching
+  document.getElementById('serviceTabs').addEventListener('click', e => {
+    const btn = e.target.closest('.stab');
+    if (!btn) return;
+    document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.service-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const panel = document.getElementById('panel-' + btn.dataset.panel);
+    if (panel) panel.classList.add('active');
+  });
+
+  // Category filter buttons (visual only)
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Scroll-triggered fade for stat cards
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.style.animationPlayState = 'paused';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
